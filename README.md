@@ -1,5 +1,7 @@
 ## User Editor CouchApp Using StratifiedJS
 
+#StratifiedJS & Oni Apollo
+
 StratifiedJS is an extended version of JavaScript with built-in facilities for concurrent programming.
 It allows you to program asynchronous, non-blocking logic (as it is common in web apps) in a conventional sequential style. It adds just a few new keywords/functions to JavaScript: hold, waitfor, and, or, resume, retract, using.
 
