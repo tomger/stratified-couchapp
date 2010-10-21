@@ -1,5 +1,15 @@
 ## User Editor CouchApp Using StratifiedJS
 
+StratifiedJS is an extended version of JavaScript with built-in facilities for concurrent programming.
+It allows you to program asynchronous, non-blocking logic (as it is common in web apps) in a conventional sequential style. It adds just a few new keywords/functions to JavaScript: hold, waitfor, and, or, resume, retract, using.
+
+Oni Apollo incorporates a cross-browser implementation of the StratifiedJS language in one small JavaScript file, combined with a CommonJS-style module system. Apollo makes structured and asynchronous programming easier on the developer.
+
+[More info about Oni Apollo here.](http://onilabs.com/docs)
+
+
+## CouchDB
+
 CouchApps are web applications which can be served directly from [CouchDB](http://couchdb.apache.org). This gives them the nice property of replicating just like any other data stored in CouchDB. They are also simple to write as they can use the built-in jQuery libraries and plugins that ship with CouchDB.
 
 [More info about CouchApps here.](http://couchapp.org)
