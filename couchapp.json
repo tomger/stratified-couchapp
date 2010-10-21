@@ -1,0 +1,4 @@
+{
+    "name": "User editor",
+    "description": "A tiny GUI for editing the couchdb user database"
+}

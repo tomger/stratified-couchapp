@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html><head>
+<script type="text/sjs">
+
+try {
+  // tell require where to load the module from
+  require.path = "./modules/";
+
+  // initialize a stratified couchdb interface (more info in the module)
+  var db = require("couchdb").couchdb("_users");
+
+  // helpers contains a bunch of experimental or normal 
+  // functions that i think might help developing an app using apollo
+  var helpers = require("helpers");
+
+  // load jQuery from a CDN and install special functions
+  require("jquery-binding").install();
+  $.fn.waitForAction = function(a) { return helpers.waitForAction(this, a); }
+
+  // load a bunch of arrayOfScripts concurrently
+  // loadScripts returns when they are all ready. 
+  helpers.loadScripts([
+    "js/jquery.objectform.js", 
+    "js/sha1.js", 
+    "js/array-1.6.js"
+  ]);
+  
+  // we're succesfully initialized if we get here, so let's go!
+  main();
+} 
+catch (e) {
+  alert("Error initializing app: " + e);
+}
+
+/****************************************************************************/
+// The main action loop
+
+function main() {
+  var input = document.getElementById("input");
+  var output = document.getElementById("output");
+
+  // we're using a plain jquery event listener, non stratified, because
+  // the dialogbox function makes sure it runs only once
+  $(output).click(function (event) {
+    if (event.target.hasAttribute("data-userid")) {
+      var user_id = event.target.getAttribute("data-userid");
+      try {
+        var user = db.get(user_id);
+        editUser(user);
+      }
+      catch (e) {
+        alert("Error while editing user: " + e);
+      }
+    }
+  })
+  // we end up in an endless key event loop
+  search_loop(input, output);
+}
+
+/****************************************************************************/
+// Define the application parts and helpers
+
+// a little mapping helper function
+function dot(p) { return function(o) { return o ? o[p] : null; }; }
+
+// search_loop makes sure the current list of users 
+// matches the query input and also refreshes when the db has changed
+function search_loop(input, output) {
+  var dom = require("dom");
+  var params = { feed: "longpoll" };
+  while(true) {
+    waitfor {
+      // block until a keyup events was triggered
+      // excuse my weird wrapper (it's defined in helpers.sjs), 
+      // i'm experimenting with what makes most sense to developers
+      helpers.events.keyup(input);
+    }
+    or {
+      // block here until couchdb _changes returns, 
+      // if it's done blocking, it will cancel the other strata aka refresh.
+      var changes = require("http").json(["/_users/_changes", params]);
+      if (changes) params.since = changes.last_seq ;
+    }
+    or {
+      // show the users for the current query. no query means all users.
+      hold(300);
+      var q = input.value ? input.value.toLowerCase() : null;
+      showUsers(q, output);
+      // wait forever
+      hold();
+    }
+  }
+}
+
+function createUser() {
+  return editUser();
+}
+
+function editUser(user) {
+  var view = {editmode: !!user};
+  user = user || db.create();
+  
+  // a helper function that makes sure only one dialog is visible at a a time
+  helpers.createExclusiveDialog(function(dialog) {
+    // load a mustache template file
+    var form = helpers.$template("user_form.mustache", view);
+    form.appendTo(dialog);
+    // this function is defined in jquery.objectform.js, fills in form fields
+    form.fillWithObject(user);
+    
+    // waitForAction is a very experimental stab at 
+    // handling typical dialog box actions
+    //   the only parameter is an object that has functions 
+    //   as properties mapped on the button classnames in the form.
+    // see the user_form.mustache file to see where they map...
+    // for each action there is a before_ filter
+    form.waitForAction({
+      before_submit: function(e) {
+        form.extractObject(user);
+        var errorBox = $(".errormessage", form);
+        errorBox.empty();
+        if (!user.name) {
+          errorBox.show().append("Name required<br/>");
+          // cancel the action
+          return false;
+        };
+        errorBox.hide();
+        return true;
+      },
+      change_password: function () {
+        var new_password = prompt("Enter a new password for " + user.name);
+        if (new_password) {
+          require("couchdb").prepareUserDoc(user, new_password);
+        }
+        // don't close the dialog
+        return false;
+      },
+      submit: function() {
+        if (!view.editmode) {
+          delete user._id;
+          require("couchdb").prepareUserDoc(user, user.password);
+          delete user.password;
+        }
+        user.save();
+      },
+      cancel: function() {},
+      before_remove: function () {
+        return confirm("Are you sure?");
+      },
+      remove: function() {
+        user.remove();
+      }
+    });
+  }, {width:400, title: view.editmode ? "Edit user" : "Create user"});
+}
+
+function showUsers(q, output) {
+  var view = {};  
+  var filter = q ? { limit: 10, startkey: q, endkey: q + "\ufff0" } : { limit: 10};
+  view.users = db.view("editor/lookup", filter).rows.map(dot("value"));
+  output.innerHTML = helpers.template("user_listing.mustache", view);
+}
+
+</script>
+
+    <title>Leden Administratie</title>
+    <link rel="stylesheet" href="css/main.css" type="text/css">
+    <script src="js/oni-apollo.js"></script>
+  </head>
+  
+  <body>
+    <div class='topbar'>
+    <span>CouchDB users</span>
+    <div class='tools'>
+      <a href="#" id="createbutton" onclick="createUser()">Create user</a>
+    </div>
+    </div>
+    <div id="view">
+      <input id="input" class='search' placeholder='Search users'/>
+      <div id="output">
+        <div style="margin:30px">Loading...</div>
+      </div>
+    </div>
+  </body>
+</html>

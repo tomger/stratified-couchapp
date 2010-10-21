@@ -1,0 +1,14 @@
+<table cellpadding='0' cellspacing='0' >
+  <tr>
+    <td></td>
+    <td>Email</td>
+    <td>Notes</td>
+  </tr>
+  {{#users}}
+    <tr>
+      <td><a data-userid='{{_id}}' href='#'>{{name}}</a></td>
+      <td>{{email}}</td>
+      <td>{{notes}}</td>
+    </tr>
+  {{/users}}
+</table>

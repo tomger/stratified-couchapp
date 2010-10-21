@@ -1,0 +1,101 @@
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+label > input, label > select {
+  width: 230px;
+}
+label span {
+  width: 140px;
+  display: block;
+  float: left;
+}
+.errormessage {
+  background: red;
+  color: white;
+  padding: 5px;
+  display: none;
+}
+td {
+  padding: 10px 20px 10px 10px;
+}
+.dialog {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  padding: 10px;
+  background: rgba(0,0,0,0.6);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.dialog label span, .dialog h3{
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+.dialog h3 {
+  margin: 0 0 8px 0;
+  text-shadow: 0 0 5px #000;
+  color: #fff;
+}
+.buttons {
+  margin-top: 20px;
+  text-align: right;
+}
+form {
+  padding: 10px;
+  background: white;
+}
+td, th, body, select {
+  font: 12px 'Helvetica Neue';
+  text-align: left;
+}
+.topbar {
+  width: 96%;
+  margin-bottom: 20px;
+  background: #fafafa;
+  padding: 2%;
+}
+.topbar {
+  font: 30px 'Helvetica Neue'; font-weight:100;
+}
+.tools a {
+  margin-left: 10px;
+  font-size: 18px;
+  line-height: 35px;
+  font-weight: 200
+}
+.tools {
+  float: right;
+}
+a {
+  color: black;
+}
+tr:nth-child(2n) {
+  background: #fafafa;
+}
+tr:first-child {
+  background: #f0f0f0;
+  color: #aaa;
+}
+table {
+  margin: 20px 0 20px 0;
+  border-radius:3px;
+}
+body {
+  padding: 0;
+  margin: 0;
+}
+#view {
+  margin: 20px;
+}
+.search {
+  font-size: 16px;
+  padding: 5px 5px 5px 15px;
+  width: 300px;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  outline: 0;
+}

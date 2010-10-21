@@ -1,0 +1,30 @@
+<form>
+   <div class='errormessage'></div>
+   <label>
+     <span>Name:</span>
+     <input name='name' {{#editmode}}disabled='disabled'{{/editmode}}/>
+    </label>
+   {{^editmode}}
+   <label>
+     <span>Password:</span>
+     <input name='password'/>
+   </label>
+   {{/editmode}}
+   <label>
+     <span>Email:</span>
+     <input name='email'/>
+   </label>
+   <label>
+     <span>Notes:</span>
+     <input name='notes'/>
+   </label>
+   <div class='buttons'>
+     {{#editmode}}
+     <input type='button' class='remove' value="Remove"/>
+     <input type='button' class='change_password' value="Change password"/>
+     {{/editmode}}
+     <input type='button' class='cancel' value="Cancel"/>
+     <input type='submit' value='Save'/>
+   </div>
+</form>
+ 
