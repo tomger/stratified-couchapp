@@ -15,6 +15,7 @@
   @summary The standard synchronous Couchdb JS API ported to StratifiedJS.
   @desc
     The only changes applied are:
+    
     - moved all functions to exports instead of CouchDB to achieve CommonJS compatibility
     - Added an exported function to construct a CouchDB object: exports.couchdb(...)
     - made .request use http.xhr instead of a blocking XHR request
